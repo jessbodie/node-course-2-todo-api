@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 
 // Require Moongoose, using object destructuring
 const {mongoose} = require('./db/mongoose');
-var {User} = require('./models/user');
-var {Todo} = require('./models/todo');
+const {User} = require('./models/user');
+const {Todo} = require('./models/todo');
 
 var app = express();
 
@@ -30,3 +30,6 @@ app.post('/todos', (req, res) => {
 app.listen(3000, () => {
     console.log('Started on port 3000');
 });
+
+
+module.exports = {app};
