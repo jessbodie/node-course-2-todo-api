@@ -2,6 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 // Require Moongoose, using object destructuring
 const {mongoose} = require('./db/mongoose');
@@ -35,6 +36,29 @@ app.get('/todos', (req, res) => {
         res.status(400).send(e);
     });
 });
+
+// GET /todos/1234ID1234
+// Pattern for URL parameter is :xx on request object
+// This creates id variable
+app.get('/todos/:id', (req, res) => {
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    Todo.findById(id).then((todo) => {
+        if(!todo) {
+            res.status(404).send();
+            return;
+        }
+        res.send({todo: todo});
+    }, (e) => {
+        res.status(400).send();
+    });
+});
+
 
 
 app.listen(3000, () => {
