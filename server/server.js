@@ -1,4 +1,5 @@
-// Responsible for routes
+// Responsible for routes 
+// create doc, get doc, delete doc routes
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -60,6 +61,29 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
+
+// DELETE /todos/1234ID1234
+app.delete('/todos/:id', (req, res) => {
+    var id = req.params.id;
+
+    // Check if valid ID
+    if (!ObjectID.isValid(id)) {
+        res.status(404).send();
+        return;
+    }
+
+    // Remove by ID
+    Todo.findByIdAndRemove(id).then((todo) => {
+        if (todo) {
+            res.status(200).send(console.log(`${todo} removed.`));
+            return;
+        } else {
+        return res.status(404).send();          
+        }
+    }).catch((e) => {        
+        res.status(400).send();
+    });
+});
 
 
 app.listen(port, () => {
