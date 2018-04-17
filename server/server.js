@@ -1,6 +1,9 @@
 // Responsible for routes 
 // create doc, get doc, delete doc routes
 
+require('./config/config');
+
+// Libraries
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -12,7 +15,7 @@ const {User} = require('./models/user');
 const {Todo} = require('./models/todo');
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
