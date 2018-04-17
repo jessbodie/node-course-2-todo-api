@@ -1,6 +1,7 @@
 // Responsible for routes 
 // create doc, get doc, delete doc routes
 
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -81,6 +82,40 @@ app.delete('/todos/:id', (req, res) => {
         return res.status(404).send();          
         }
     }).catch((e) => {        
+        res.status(400).send();
+    });
+});
+
+
+// PATCH - to update a resource
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    // _.pick is lodash utility to pick off select properties
+    // first param: object, 2nd param: array of properties to pick off
+    var body = _.pick(req.body, ['text', 'completed']);
+
+    // Check if valid ID
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    
+    // If body.completed seet to true
+    if (_.isBoolean(body.completed) && body.completed) {
+        // Returns number of milliseconds since Jan 1 1970
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completed = false;
+        body.completedAt = null;
+    }
+
+    Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+        console.log(todo);
+        if (!todo) {
+            console.log('no todo', todo);
+            return res.status(404).send();
+        } 
+        res.send({todo: todo});
+    }).catch((e) => {
         res.status(400).send();
     });
 });
